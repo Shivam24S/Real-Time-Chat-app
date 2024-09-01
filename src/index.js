@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
 import { Server } from "socket.io";
+import { Socket } from "dgram";
 
 const app = express();
 
@@ -26,8 +27,21 @@ app.get("/", async (req, res) => {
   res.status(200).send("Welcome");
 });
 
-io.on("connection", () => {
+let count = 0;
+
+io.on("connection", (socket) => {
   console.log("New websocket connection");
+
+  socket.emit("countUpdated", count);
+
+  socket.on("increment", () => {
+    count++;
+    //   now for individual
+    //   socket.emit("countUpdated", count);
+    // for every other socket
+
+    io.emit("countUpdated", count);
+  });
 });
 
 server.listen(PORT, () => {
