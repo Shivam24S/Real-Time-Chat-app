@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
 import { Server } from "socket.io";
-import { Socket } from "dgram";
+import cors from "cors";
 
 const app = express();
 
@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename);
 const publicDirectory = path.join(__dirname, "../public");
 
 app.use(express.static(publicDirectory));
+app.use(cors());
 
 // Creating server
 const server = http.createServer(app);
@@ -27,20 +28,25 @@ app.get("/", async (req, res) => {
   res.status(200).send("Welcome");
 });
 
-let count = 0;
-
 io.on("connection", (socket) => {
   console.log("New websocket connection");
+  //   let count = 0;
+  //   socket.emit("countUpdated", count);
 
-  socket.emit("countUpdated", count);
+  //   socket.on("increment", () => {
+  //     count++;
+  //     //   now for individual
+  //     //   socket.emit("countUpdated", count);
+  //     // for every other socket
 
-  socket.on("increment", () => {
-    count++;
-    //   now for individual
-    //   socket.emit("countUpdated", count);
-    // for every other socket
+  //     io.emit("countUpdated", count);
+  //   });
 
-    io.emit("countUpdated", count);
+  socket.emit("message", "Welcome");
+
+  socket.on("sendMessage", (message) => {
+    // console.log(message);
+    io.emit("message", message);
   });
 });
 

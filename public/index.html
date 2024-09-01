@@ -8,7 +8,11 @@
   <body>
     <h4>Real Time Chat App</h4>
     <br />
-    <button id="increment">+1</button>
+    <form id="msg-form">
+      <input type="text" name="message" placeholder="enter a message" />
+      <button type="submit">send</button>
+    </form>
+    <!-- <button id="increment">+1</button> -->
     <script src="socket.io/socket.io.js"></script>
     <script src="./js/chat.js"></script>
   </body>
