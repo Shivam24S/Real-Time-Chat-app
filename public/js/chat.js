@@ -19,3 +19,17 @@ document.querySelector("#msg-form").addEventListener("submit", (e) => {
 
   socket.emit("sendMessage", message);
 });
+
+document.querySelector("#location").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    alert("your browser does not support geolocation");
+  }
+
+  navigator.geolocation.getCurrentPosition((position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    // console.log("latitude " + " " + lat, "longitude " + " " + lon);
+
+    socket.emit("shareLocation", lat, lon);
+  });
+});

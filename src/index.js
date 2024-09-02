@@ -38,6 +38,10 @@ io.on("connection", (socket) => {
     io.emit("message", message);
   });
 
+  socket.on("shareLocation", (lat, lon) => {
+    io.emit("message", `https://google.com/maps/?q=${lat},${lon}`);
+  });
+
   socket.on("disconnect", () => {
     io.emit("message", "user has left");
   });
