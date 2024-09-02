@@ -30,23 +30,16 @@ app.get("/", async (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("New websocket connection");
-  //   let count = 0;
-  //   socket.emit("countUpdated", count);
-
-  //   socket.on("increment", () => {
-  //     count++;
-  //     //   now for individual
-  //     //   socket.emit("countUpdated", count);
-  //     // for every other socket
-
-  //     io.emit("countUpdated", count);
-  //   });
 
   socket.emit("message", "Welcome");
+  socket.broadcast.emit("message", "A new user has joined");
 
   socket.on("sendMessage", (message) => {
-    // console.log(message);
     io.emit("message", message);
+  });
+
+  socket.on("disconnect", () => {
+    io.emit("message", "user has left");
   });
 });
 
