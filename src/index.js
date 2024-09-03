@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import { Filter } from "bad-words";
 
 const app = express();
 
@@ -34,12 +35,20 @@ io.on("connection", (socket) => {
   socket.emit("message", "Welcome");
   socket.broadcast.emit("message", "A new user has joined");
 
-  socket.on("sendMessage", (message) => {
+  socket.on("sendMessage", (message, callback) => {
     io.emit("message", message);
+
+    const filter = new Filter();
+
+    if (filter.isProfane(message)) {
+      return callback("Profanity message found ");
+    }
+    callback();
   });
 
-  socket.on("shareLocation", (lat, lon) => {
+  socket.on("shareLocation", (lat, lon, callback) => {
     io.emit("message", `https://google.com/maps/?q=${lat},${lon}`);
+    callback("location received");
   });
 
   socket.on("disconnect", () => {
