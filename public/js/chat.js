@@ -1,13 +1,5 @@
 const socket = io();
 
-// socket.on("countUpdated", (count) => {
-//   console.log("count has been updated", count);
-// });
-
-// document.querySelector("#increment").addEventListener("click", (count) => {
-//   socket.emit("increment", count);
-// });
-
 // rendering messages
 
 const messageTemplate = document.querySelector("#message-template").innerHTML;
@@ -20,6 +12,23 @@ socket.on("message", (msg) => {
     msg,
   });
   $messages.insertAdjacentHTML("beforeend", html);
+});
+
+socket.on("location-url", (url) => {
+  console.log(url);
+});
+
+// location url template
+
+const locationTemplate = document.querySelector("#location-template").innerHTML;
+const $locations = document.querySelector("#locations");
+
+socket.on("location-url", (url) => {
+  const locationUrl = Mustache.render(locationTemplate, {
+    url,
+  });
+
+  $messages.insertAdjacentHTML("beforeend", locationUrl);
 });
 
 // elements
@@ -65,69 +74,3 @@ $locationButton.addEventListener("click", () => {
     });
   });
 });
-
-// const socket = io();
-
-// // socket.on("countUpdated", (count) => {
-// //   console.log("count has been updated", count);
-// // });
-
-// // document.querySelector("#increment").addEventListener("click", (count) => {
-// //   socket.emit("increment", count);
-// // });
-
-// // rendering messages
-// const messageTemplate = document.querySelector("#message-template").innerHTML;
-// const $messages = document.querySelector("#messages");
-
-// // elements
-// const $messageForm = document.querySelector("#msg-form");
-// const $messageFormInput = $messageForm.querySelector("input");
-// const $messageFormButton = $messageForm.querySelector("button");
-
-// socket.on("message", (msg) => {
-//   console.log(msg);
-
-//   const html = Mustache.render(messageTemplate, { msg });
-//   $messages.insertAdjacentHTML("beforeend", html);
-// });
-
-// $messageForm.addEventListener("submit", (e) => {
-//   e.preventDefault();
-
-//   const message = e.target.elements.message.value;
-
-//   $messageFormButton.setAttribute("disabled", "disabled");
-
-//   socket.emit("sendMessage", message, (error) => {
-//     $messageFormButton.removeAttribute("disabled");
-
-//     $messageFormInput.value = "";
-//     $messageFormInput.focus();
-
-//     if (error) {
-//       return console.log("Error:", error);
-//     }
-//     console.log("Message was delivered!");
-//   });
-// });
-
-// const $locationButton = document.querySelector("#location");
-
-// $locationButton.addEventListener("click", () => {
-//   if (!navigator.geolocation) {
-//     return alert("Your browser does not support geolocation");
-//   }
-
-//   $locationButton.setAttribute("disabled", "disabled");
-
-//   navigator.geolocation.getCurrentPosition((position) => {
-//     const lat = position.coords.latitude;
-//     const lon = position.coords.longitude;
-
-//     socket.emit("shareLocation", lat, lon, (serverMsg) => {
-//       console.log("Location was captured!", "ServerMsg:", serverMsg);
-//       $locationButton.removeAttribute("disabled");
-//     });
-//   });
-// });
