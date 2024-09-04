@@ -6,6 +6,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { Filter } from "bad-words";
+import generateMessages from "../utils/messages.js";
 
 const app = express();
 
@@ -32,11 +33,11 @@ app.get("/", async (req, res) => {
 io.on("connection", (socket) => {
   console.log("New websocket connection");
 
-  socket.emit("message", "Welcome");
-  socket.broadcast.emit("message", "A new user has joined");
+  socket.emit("message", generateMessages("welcome!"));
+  socket.broadcast.emit("message", generateMessages("A new user has joined"));
 
   socket.on("sendMessage", (message, callback) => {
-    io.emit("message", message);
+    io.emit("message", generateMessages(message));
 
     const filter = new Filter();
 
@@ -52,7 +53,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    io.emit("message", "user has left");
+    io.emit("message", generateMessages("user has left"));
   });
 });
 
