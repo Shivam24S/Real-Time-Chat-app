@@ -26,7 +26,8 @@ const $locations = document.querySelector("#locations");
 
 socket.on("location-url", (url) => {
   const locationUrl = Mustache.render(locationTemplate, {
-    url,
+    url: url.text,
+    createdAt: moment(url.createdAt).format("h:mm a"),
   });
 
   $messages.insertAdjacentHTML("beforeend", locationUrl);
