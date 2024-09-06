@@ -41,6 +41,19 @@ const removeUser = (id) => {
   }
 };
 
+// get user
+
+const getUser = (id) => {
+  const user = users.find((user) => user.id === id);
+  return user;
+};
+
+//get User in chat room
+
+const getUserInChatRoom = (room) => {
+  return users.filter((user) => user.room === room);
+};
+
 // checking
 
 // clean the data
@@ -81,3 +94,21 @@ const removeRes = removeUser(4);
 
 console.log("removed user", removeRes);
 console.log("left user", users);
+
+// get user checking
+
+const gettingUser = getUser(1);
+
+console.log("getting user", gettingUser);
+
+// checking for getUserInChatRoom
+
+const sameRoom = addUsers({
+  id: 5,
+  username: "shivay",
+  room: "random",
+});
+
+const gettingSameRoomUser = getUserInChatRoom("random");
+
+console.log("gettingSameRoomUser", gettingSameRoomUser);
