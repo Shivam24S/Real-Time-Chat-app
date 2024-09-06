@@ -33,8 +33,25 @@ app.get("/", async (req, res) => {
 io.on("connection", (socket) => {
   console.log("New websocket connection");
 
-  socket.emit("message", generateMessages("welcome!"));
-  socket.broadcast.emit("message", generateMessages("A new user has joined"));
+  socket.on("join", ({ username, room }) => {
+    socket.join(room);
+    socket.emit("message", generateMessages("welcome!"));
+    socket.broadcast
+      .to(room)
+      .emit("message", generateMessages(`${username} has joined`));
+
+    // socket.emit() =>specific client
+
+    // io.emit() =>every client
+
+    // socket.broadcast.emit()=>every connected client expect one the client who initiated
+
+    // now for socket room
+
+    // socket.to().emit =>specific client in that room
+
+    // socket.broadcast.to().emit() =>every connected client in room expect one the client who initiated
+  });
 
   socket.on("sendMessage", (message, callback) => {
     io.emit("message", generateMessages(message));

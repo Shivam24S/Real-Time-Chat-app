@@ -5,6 +5,14 @@ const socket = io();
 const messageTemplate = document.querySelector("#message-template").innerHTML;
 const $messages = document.querySelector("#messages");
 
+// user and room detail
+
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
+
+console.log("query data", username, room);
+
 socket.on("message", (msg) => {
   console.log(msg);
 
@@ -76,3 +84,5 @@ $locationButton.addEventListener("click", () => {
     });
   });
 });
+
+socket.emit("join", { username, room });
