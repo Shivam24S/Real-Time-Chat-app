@@ -31,6 +31,16 @@ const addUsers = ({ id, username, room }) => {
   return { user };
 };
 
+// remove user
+
+const removeUser = (id) => {
+  const index = users.findIndex((user) => user.id === id);
+
+  if (index !== -1) {
+    return users.splice(index, 1)[0];
+  }
+};
+
 // checking
 
 // clean the data
@@ -64,3 +74,10 @@ const res4 = addUsers({
 
 console.log(res4);
 console.log(users);
+
+// checking for remove user
+
+const removeRes = removeUser(4);
+
+console.log("removed user", removeRes);
+console.log("left user", users);
