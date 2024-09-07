@@ -93,3 +93,15 @@ socket.emit("join", { username, room }, (error) => {
     location.href = "/";
   }
 });
+
+// sidebar
+
+const sideBarTemplate = document.querySelector("#sidebar-template").innerHTML;
+
+socket.on("roomData", ({ room, users }) => {
+  const html = Mustache.render(sideBarTemplate, {
+    room,
+    users,
+  });
+  document.querySelector("#sidebar").innerHTML = html;
+});

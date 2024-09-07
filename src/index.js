@@ -7,7 +7,12 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { Filter } from "bad-words";
 import { generateMessages, generateLocation } from "../utils/messages.js";
-import { addUsers, getUser, removeUser } from "../utils/users.js";
+import {
+  addUsers,
+  getUser,
+  removeUser,
+  getUserInChatRoom,
+} from "../utils/users.js";
 
 const app = express();
 
@@ -48,6 +53,10 @@ io.on("connection", (socket) => {
         "message",
         generateMessages(user.username, `${user.username} has joined`)
       );
+    io.to(user.room).emit("roomData", {
+      room: user.room,
+      users: getUserInChatRoom(user.room),
+    });
 
     callback();
 
@@ -97,7 +106,11 @@ io.on("connection", (socket) => {
     if (user) {
       io.to(user.room).emit(
         "message",
-        generateMessages(`${user.username} has left.`)
+        generateMessages(`${user.username} has left.`),
+        io.to(user.room).emit("roomData", {
+          room: user.room,
+          users: getUserInChatRoom(user.room),
+        })
       );
     }
   });
