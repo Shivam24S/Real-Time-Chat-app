@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { Filter } from "bad-words";
 import generateMessages from "../utils/messages.js";
+import { addUsers, removeUser } from "../utils/users.js";
 
 const app = express();
 
@@ -33,12 +34,19 @@ app.get("/", async (req, res) => {
 io.on("connection", (socket) => {
   console.log("New websocket connection");
 
-  socket.on("join", ({ username, room }) => {
-    socket.join(room);
+  socket.on("join", ({ username, room }, callback) => {
+    const { error, user } = addUsers({ id: socket.id, username, room });
+
+    if (error) {
+      return callback(error);
+    }
+    socket.join(user.room);
     socket.emit("message", generateMessages("welcome!"));
     socket.broadcast
-      .to(room)
-      .emit("message", generateMessages(`${username} has joined`));
+      .to(user.room)
+      .emit("message", generateMessages(`${user.username} has joined`));
+
+    callback();
 
     // socket.emit() =>specific client
 
@@ -73,7 +81,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    io.emit("message", generateMessages("user has left"));
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit(
+        "message",
+        generateMessages(`${user.username} has left.`)
+      );
+    }
   });
 });
 

@@ -38,8 +38,6 @@ const removeUser = (id) => {
 
   if (index !== -1) {
     return users.splice(index, 1)[0];
-  } else {
-    throw new Error("user not found");
   }
 };
 
@@ -56,4 +54,4 @@ const getUserInChatRoom = (room) => {
   return users.filter((user) => user.room === room);
 };
 
-export default { addUsers, removeUser, getUserInChatRoom, getUser };
+export { addUsers, removeUser, getUserInChatRoom, getUser };
