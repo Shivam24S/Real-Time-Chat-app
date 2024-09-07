@@ -1,8 +1,17 @@
-const generateMessages = (text) => {
+const generateMessages = (username, text) => {
   return {
+    username,
     text,
     createdAt: new Date().getTime(),
   };
 };
 
-export default generateMessages;
+const generateLocation = (username, url) => {
+  return {
+    username,
+    url,
+    createdAt: new Date().getTime(),
+  };
+};
+
+export { generateMessages, generateLocation };

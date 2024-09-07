@@ -6,8 +6,8 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { Filter } from "bad-words";
-import generateMessages from "../utils/messages.js";
-import { addUsers, removeUser } from "../utils/users.js";
+import { generateMessages, generateLocation } from "../utils/messages.js";
+import { addUsers, getUser, removeUser } from "../utils/users.js";
 
 const app = express();
 
@@ -41,10 +41,13 @@ io.on("connection", (socket) => {
       return callback(error);
     }
     socket.join(user.room);
-    socket.emit("message", generateMessages("welcome!"));
+    socket.emit("message", generateMessages(`welcome ${user.username}!`));
     socket.broadcast
       .to(user.room)
-      .emit("message", generateMessages(`${user.username} has joined`));
+      .emit(
+        "message",
+        generateMessages(user.username, `${user.username} has joined`)
+      );
 
     callback();
 
@@ -62,20 +65,28 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (message, callback) => {
-    io.emit("message", generateMessages(message));
+    const user = getUser(socket.id);
 
     const filter = new Filter();
 
     if (filter.isProfane(message)) {
       return callback("Profanity message found ");
     }
+
+    io.to(user.room).emit("message", generateMessages(user.username, message));
+
     callback();
   });
 
   socket.on("shareLocation", (lat, lon, callback) => {
-    io.emit(
+    const user = getUser(socket.id);
+
+    io.to(user.room).emit(
       "location-url",
-      generateMessages(`https://google.com/maps/?q=${lat},${lon}`)
+      generateLocation(
+        user.username,
+        `https://google.com/maps/?q=${lat},${lon}`
+      )
     );
     callback("location received");
   });
