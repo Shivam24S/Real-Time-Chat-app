@@ -1,4 +1,3 @@
-import "../db/mongoose.js";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
