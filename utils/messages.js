@@ -9,7 +9,7 @@ const generateMessages = (username, text) => {
 const generateLocation = (username, url) => {
   return {
     username,
-    url,
+    text: url,
     createdAt: new Date().getTime(),
   };
 };
